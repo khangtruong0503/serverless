@@ -27,8 +27,9 @@ plugins:
   - serverless-stack-termination-protection
 
 custom:
+  s3HostingName: ${self:service}-${self:provider.stage}-s3-hosting
   s3Sync:
-    - bucketName: !Ref StaticSite
+    - bucketName: ${self:custom.s3HostingName}
       bucketPrefix: ''
       localDir: frontend
   serverlessTerminationProtection: 
