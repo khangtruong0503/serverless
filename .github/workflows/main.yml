@@ -41,16 +41,12 @@ jobs:
         cd backend
         yarn install
 
-    - name: install packages in frontend folder
+    - name: install packages and build in frontend folder
       run: |
         cd frontend
         yarn install
         yarn run setup
-
-    - name: build frontend
-      run: |
-        cd frontend
-        yarn build
+        yarn run build
 
     # - name: yarn test
     #   run: |
