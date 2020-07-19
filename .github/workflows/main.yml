@@ -1,0 +1,54 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['12.x', '10.x', '8.x']
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: yarn install
+      run: |
+        yarn install
+        
+    - name: install serverless framework
+      run: |
+        yarn global add serverless
+    
+    - name: install packages in backend folder
+      run: |
+        cd backend
+        yarn install
+    # - name: yarn test
+    #   run: |
+    #     yarn test 
+    #   env:
+    #     CI: true
+
+    - name: config AWS credentials
+      run: |
+        npx serverless config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY }} --secret ${{ secrets.AWS_SECRET_KEY }} --profile khangtruong0503
+    - name: deploy
+      run: |
+        npx serverless deploy

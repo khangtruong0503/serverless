@@ -1,0 +1,90 @@
+# SNS topic
+ServerlessSnsTopic:
+  Type: AWS::SNS::Topic
+  Properties: 
+    DisplayName: ServerlessDevelopers
+
+# SNS subscription
+ServerlessSnsSubscription:
+  Type: "AWS::SNS::Subscription"
+  Properties:
+    Endpoint: ${self:custom.snsEmail}
+    Protocol: email
+    Region: ${self:provider.region}
+    TopicArn: !Ref ServerlessSnsTopic
+
+# Alarm - Lambda error
+SignupAlarmError:
+  Type: AWS::CloudWatch::Alarm
+  Properties:
+    AlarmName: ${self:service}-${self:provider.stage}-signup-Error
+    AlarmDescription: 'Lambda function has an error.'
+    AlarmActions:
+      - !Ref ServerlessSnsTopic
+    ComparisonOperator: GreaterThanOrEqualToThreshold
+    EvaluationPeriods: 1
+    MetricName: Errors
+    Namespace: AWS/Lambda
+    Period: '60'
+    Statistic: Sum
+    Threshold: '1'
+    Dimensions:
+      - Name: "FunctionName"
+        Value: ${self:service}-${self:provider.stage}-signup
+
+# Alarm - Lambda duration
+SignupAlarmDuration:
+  Type: AWS::CloudWatch::Alarm
+  Properties:
+    AlarmName: ${self:service}-${self:provider.stage}-signup-Duration
+    AlarmDescription: 'Lambda function takes a long time to complete.'
+    AlarmActions:
+      - !Ref ServerlessSnsTopic
+    ComparisonOperator: GreaterThanOrEqualToThreshold
+    EvaluationPeriods: 1
+    MetricName: Duration
+    Namespace: AWS/Lambda
+    Period: '60'
+    Statistic: Sum
+    Threshold: '30000' # ms
+    Dimensions:
+      - Name: "FunctionName"
+        Value: ${self:service}-${self:provider.stage}-signup
+
+# Alarm - Lambda error
+SigninAlarmError:
+  Type: AWS::CloudWatch::Alarm
+  Properties:
+    AlarmName: ${self:service}-${self:provider.stage}-signin-Error
+    AlarmDescription: 'Lambda function has an error.'
+    AlarmActions:
+      - !Ref ServerlessSnsTopic
+    ComparisonOperator: GreaterThanOrEqualToThreshold
+    EvaluationPeriods: 1
+    MetricName: Errors
+    Namespace: AWS/Lambda
+    Period: '60'
+    Statistic: Sum
+    Threshold: '1'
+    Dimensions:
+      - Name: "FunctionName"
+        Value: ${self:service}-${self:provider.stage}-signin
+
+# Alarm - Lambda duration
+SigninAlarmDuration:
+  Type: AWS::CloudWatch::Alarm
+  Properties:
+    AlarmName: ${self:service}-${self:provider.stage}-signin-Duration
+    AlarmDescription: 'Lambda function takes a long time to complete.'
+    AlarmActions:
+      - !Ref ServerlessSnsTopic
+    ComparisonOperator: GreaterThanOrEqualToThreshold
+    EvaluationPeriods: 1
+    MetricName: Duration
+    Namespace: AWS/Lambda
+    Period: '60'
+    Statistic: Sum
+    Threshold: '30000' # ms
+    Dimensions:
+      - Name: "FunctionName"
+        Value: ${self:service}-${self:provider.stage}-signin

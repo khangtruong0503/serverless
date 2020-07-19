@@ -1,0 +1,59 @@
+service: serverlessApp
+
+package:
+  include:
+    - backend/**    
+  exclude:
+    - frontend/** 
+    - node_modules/** 
+
+provider:
+  profile: khangtruong0503
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 128 # optional, in MB, default is 1024
+  timeout: 30 # optional, in seconds, default is 6
+  versionFunctions: false # optional, default is true
+
+  # you can overwrite defaults here
+  stage: dev
+  region: ap-southeast-1
+  environment:
+    USER_POOL_ID: !Ref CognitoUserPool
+    USER_POOL_CLIENT_ID: !Ref CognitoUserPoolClient
+
+plugins:
+  # - serverless-s3-sync
+  # - serverless-domain-manager
+
+custom:
+  siteName: ${self:service}.khangtruong.com
+  snsEmail: khangtruong0503@gmail.com
+  s3Sync:
+    - bucketName: ${self:service}-${self:provider.stage}-serverless
+      bucketPrefix: ''
+      localDir: frontend
+  serverlessTerminationProtection: 
+    stages: 
+      - prod 
+      - live 
+      - stg 
+      - dev 
+
+functions:
+  registeredOnly:
+    handler: backend/handler.requireLoggedIn
+    events:
+      - http:
+          path: /logged-in
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+# you can add CloudFormation resource templates here
+resources:
+  # - Resources: ${file(serverlessAlarm.yml)}
+  - Resources: ${file(serverlessCognito.yml)}
+  - Resources: ${file(serverlessS3Hosting.yml)}
