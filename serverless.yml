@@ -1,4 +1,4 @@
-service: serverlessApp
+service: serverless-app
 
 package:
   include:
