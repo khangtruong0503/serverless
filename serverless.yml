@@ -23,8 +23,8 @@ provider:
     USER_POOL_CLIENT_ID: !Ref CognitoUserPoolClient
 
 plugins:
-  # - serverless-s3-sync
-  # - serverless-domain-manager
+  - serverless-s3-sync
+  - serverless-stack-termination-protection
 
 custom:
   siteName: ${self:service}.khangtruong.com
