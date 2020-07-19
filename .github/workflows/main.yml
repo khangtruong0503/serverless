@@ -45,6 +45,7 @@ jobs:
       run: |
         cd frontend
         yarn install
+        yarn run setup
 
     - name: build frontend
       run: |
