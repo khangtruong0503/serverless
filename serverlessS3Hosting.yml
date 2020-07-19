@@ -5,6 +5,7 @@ StaticSite:
     AccessControl: PublicRead
     WebsiteConfiguration:
       IndexDocument: index.html
+      ErrorDocument: index.html
 
 StaticSiteS3BucketPolicy:
   Type: AWS::S3::BucketPolicy
