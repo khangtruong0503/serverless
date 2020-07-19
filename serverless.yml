@@ -27,10 +27,8 @@ plugins:
   - serverless-stack-termination-protection
 
 custom:
-  siteName: ${self:service}.khangtruong.com
-  snsEmail: khangtruong0503@gmail.com
   s3Sync:
-    - bucketName: ${self:service}-${self:provider.stage}-serverless
+    - bucketName: !Ref StaticSite
       bucketPrefix: ''
       localDir: frontend
   serverlessTerminationProtection: 
